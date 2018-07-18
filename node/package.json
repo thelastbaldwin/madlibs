@@ -1,0 +1,15 @@
+{
+  "name": "madlibs",
+  "version": "1.0.0",
+  "description": "command-line madlibs program written in node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js --"
+  },
+  "author": "Steve Minor",
+  "license": "ISC",
+  "dependencies": {
+    "readline-sync": "^1.4.9"
+  }
+}
