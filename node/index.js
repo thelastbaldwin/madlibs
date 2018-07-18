@@ -1,7 +1,7 @@
 const fs = require("fs");
 const readlineSync = require("readline-sync");
 const TEMPLATE_DIR = "../templates";
-const tagRegex = /{([\w\s()]+)}/g;
+const tagRegex = /{([^}]+)}/g;
 let fileName = process.argv.find(arg => arg.indexOf(".madlib") !== -1);
 
 const printHeadline = () => {
@@ -32,9 +32,9 @@ let match = tagRegex.exec(template);
 
 while (match){
     const token = match[1];
-    matchDict[token] = matchDict[token] || {replacements: [], replaceIndex: 0};
-    //prompt for and insert substitution
     const replacementToken = readlineSync.question(`Enter a ${token.toLowerCase()}: `);
+
+    matchDict[token] = matchDict[token] || {replacements: [], replaceIndex: 0};
     matchDict[token].replacements.push(replacementToken);
     match = tagRegex.exec(template);
 }
