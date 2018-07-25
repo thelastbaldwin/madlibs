@@ -23,8 +23,7 @@ let template;
 try {
     template = fs.readFileSync(`${TEMPLATE_DIR}/${fileName}`);
 } catch (e) {
-    console.log(`There was a problem opening ${TEMPLATE_DIR}/${fileName}.`);
-    console.log("Please check the filename and permissions");
+    throw "There was a problem opening your file. Please check the filename and permissions";
 }
 
 const matchDict = {};
