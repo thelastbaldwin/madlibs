@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace madlibs
 {
@@ -20,24 +22,57 @@ namespace madlibs
             }
         }
 
+        public static string getTemplateFromList(string[] files){
+            byte templateIndex = Convert.ToByte(Console.ReadLine());
+            if (templateIndex >= 0 && templateIndex < files.Length){
+                return File.ReadAllText(files[templateIndex]);
+            }
+            Console.WriteLine("\nChoose another index:");
+            return null;
+        }
+
+        public static int nextOpeningTagIndex(string template, int from = 0) => template.IndexOf('{', from);
+        public static int nextClosingTagIndex(string template, int from = 0) => template.IndexOf('}', from);
+        public static bool isVowel(char letter) => "aeiouAEIOU".Contains(letter.ToString());
+
         public static void Main(string[] args)
         {
             printHeadline();
-
-            foreach(string arg in args){
-                Console.WriteLine(arg);
-            }
 
             Console.WriteLine("\nAvailable Templates:\n");
             string[] templates = Directory.GetFiles("../../../../templates");
             listFiles(templates);
 
             Console.WriteLine("Which Template? ");
-            byte templateIndex = Convert.ToByte(Console.ReadLine());
+            string template = null;
+            while (String.IsNullOrEmpty(template))
+            {
+                template = getTemplateFromList(templates);
+            }
 
-            var template = File.ReadAllText(templates[templateIndex]);
-            Console.WriteLine(template);
+            var madLib = new StringBuilder();
+            var stringIndex = 0;
 
+            while(stringIndex != template.Length){
+                var openingTagIndex = nextOpeningTagIndex(template, stringIndex);
+                int closingTagIndex;
+
+                if(openingTagIndex > -1){
+                    closingTagIndex = nextClosingTagIndex(template, openingTagIndex);
+                    var token = template.Substring(openingTagIndex + 1, closingTagIndex - openingTagIndex - 1);
+                    Console.WriteLine("\nEnter a{0} {1}", isVowel(token[0]) ? "n" : "", token.ToLower());
+                    var replacementToken = Console.ReadLine();
+
+                    madLib.Append(template.Substring(stringIndex, openingTagIndex - stringIndex));
+                    madLib.Append(replacementToken);
+                    stringIndex = closingTagIndex + 1;
+
+                } else {
+                    stringIndex = template.Length;
+                }
+            }
+
+            Console.WriteLine("\nYour madlib:\n{0}", madLib.ToString());
         }
     }
 }
